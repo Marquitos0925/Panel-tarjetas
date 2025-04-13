@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Tarjetas</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f8f9fa;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 800px;
+      width: 100%;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      text-align: center;
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .card p {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <div class="card">
+      <h2>Total de Tarjetas</h2>
+      <p id="total">1200</p>
+    </div>
+    <div class="card">
+      <h2>Escaneadas</h2>
+      <p id="escaneadas">0</p>
+    </div>
+    <div class="card">
+      <h2>Faltantes</h2>
+      <p id="faltantes">1200</p>
+    </div>
+  </div>
+
+  <script>
+    const SHEET_ID = "1sGj49F6tUeFIrcC-xKJqnDZQ7sfcKVUVPSS20TNksT8";
+    const API_KEY = "AIzaSyCf3Jp4GFtgMJmOQ-PAljytyhhf4emyXoM";
+    const TOTAL = 1200;
+    const SHEET_NAME = "Respuestas del formulario 1"; // Ajustar si cambia el nombre
+
+    function actualizarDatos() {
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/'${SHEET_NAME}'?key=${API_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          const escaneadas = data.values.length - 1;
+          const faltantes = TOTAL - escaneadas;
+          document.getElementById("escaneadas").innerText = escaneadas;
+          document.getElementById("faltantes").innerText = faltantes;
+        })
+        .catch(err => {
+          console.error("Error al obtener datos:", err);
+        });
+    }
+
+    actualizarDatos();
+    setInterval(actualizarDatos, 5000);
+  </script>
+</body>
+</html>
